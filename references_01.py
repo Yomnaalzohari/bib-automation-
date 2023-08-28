@@ -128,18 +128,21 @@ def view_menu(options):
 
 
 # Select the right function to work on
+# on success return 0 on error return -1
 def choose_option(choice):
     if choice == 1:
-        dblp_text()
+        result = dblp_text()
     elif choice == 2:
-        dblp_url()
+        result = dblp_url()
     elif choice == 3:
-        arxiv_text()
+        result = arxiv_text()
     elif choice == 4:
-        springer_url()
+        result = springer_url()
+    return result
 
 
 # Access database dblp using keyword to get the references
+# on success return 0 on error return -1
 def dblp_text():
     global root
     global listbox
@@ -225,6 +228,7 @@ def dblp_text():
                 print("Not found any references")
                 file = open("references.txt", "w", encoding="UTF-8")
                 file.close()
+                return -1
             else:
                 file = open("references.txt", "w", encoding="UTF-8")
                 f2 = open("title_url.txt", "w", encoding="UTF-8")
@@ -280,6 +284,7 @@ def dblp_text():
                 f2.close()
                 f3.close()
                 dbl_k_title("reference.bib")
+                return 0
             break
         else: # Error code from the server
             print("Error :", resp.status_code)
@@ -287,6 +292,7 @@ def dblp_text():
                 if myhits == 1:
                     print("There's a temporary problem in the server, please try again later")
                     break
+                    return -1
                 time.sleep(1)
                 print("Changing hits from", myhits, end=" ")
                 # Reduce to half the hits objective to reduce the load of the server
@@ -294,7 +300,9 @@ def dblp_text():
                 print("to",myhits)
             else:
                 break
+                return -1
 
+# on success return 0 on error return -1
 def dblp_url():
     # ask for the url to search
     url = input("Enter the bib url to search: ")
@@ -303,6 +311,7 @@ def dblp_url():
 
     if (len(a) == 1) or (url[0:16] != "https://dblp.org"):
         print("That is not a valid url")
+        return -1
     elif (len(a) <= 3):
         biburl = a[0] + "." + a[1] + ".bib"
         print(biburl)
@@ -314,12 +323,15 @@ def dblp_url():
             with open("reference.bib", "wb") as bf:
                 bf.write(resp.content)
             dbl_k_title("reference.bib")
+            return 0
         else: # Error code from the server
             print("Error :", resp.status_code)
+            return -1
     else:
         print("That is not a valid url")
+        return -1
 
-
+# on success return 0 on error return -1
 def arxiv_text():
     global root
     global listbox
@@ -417,6 +429,7 @@ def arxiv_text():
             print("Not found any references")
             file = open("references_arxiv.txt", "w", encoding="UTF-8")
             file.close()
+            return -1
         else:
             file = open("references_arxiv.txt", "w", encoding="UTF-8")
             f2 = open("title_url_arxiv.txt", "w", encoding="UTF-8")
@@ -455,9 +468,11 @@ def arxiv_text():
                 f3.write(my_dict["f3"])            
             file.close()
             f2.close()
-            f3.close()        
+            f3.close()
+            return 0
     else: # Error code from the server
         print("Error :", resp.status_code)
+        return -1
 
 
 def breakl_spr(line: str):
@@ -476,6 +491,7 @@ def breakl_spr(line: str):
             break
     return lines
 
+# on success return 0 on error return -1
 def springer_url():
     # ask for the url to search
     # example html page:
@@ -524,10 +540,13 @@ def springer_url():
                     
             f1.close()
             f2.close()
+            return 0
         else: # Error code from the server
             print("Error :", resp.status_code)
+            return -1
     else:
         print("That is not a valid url")
+        return -1
 
 
 def main():
@@ -539,7 +558,8 @@ def main():
         'springer url entry'
     ]
     my_choice = view_menu(options)
-    choose_option(my_choice)
-    result = subprocess.run(["py", "references_02.py"])
+    my_success = choose_option(my_choice)
+    if my_success == 0 :
+        result = subprocess.run(["py", "references_02.py"])
 
 main()
