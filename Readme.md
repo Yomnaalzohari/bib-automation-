@@ -15,10 +15,6 @@ pip install -r requirements.txt
 ## Getting started
 To use this tool , run the following command 
 ```
-py references_01.py
-```
-or 
-```
 python references_01.py
 ```
 Afterward, you'll be presented with four user-friendly options, each designed for different publication sites and methods of searching for books.
