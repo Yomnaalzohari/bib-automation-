@@ -256,14 +256,18 @@ def dblp_text():
                                 slen = tlen
                             dict_title[title] = url
                             count += 1
-                    # show a menu to choose the right tittle
-                    listbox.bind("<<ListboxSelect>>", on_select)
-                    close_button.pack()
-                    root.geometry(f'{slen+5}x300')
-                    root.deiconify()
-                    root.mainloop()
-                    url = dict_title[selected_item]
-                    print("Downloading:", selected_item, " wait ...", end=" ")
+                    if count > 1:
+                        # show a menu to choose the right tittle
+                        listbox.bind("<<ListboxSelect>>", on_select)
+                        close_button.pack()
+                        root.geometry(f'{slen+5}x300')
+                        root.deiconify()
+                        root.mainloop()
+                        url = dict_title[selected_item]
+                        print("Downloading:", selected_item, " wait ...", end=" ")
+                    else:
+                        print("No one option meet the exact criteria for:  ", my_key)
+                        return -1
                 # there is just one reference
                 else:
                     info = hit["info"]
@@ -560,6 +564,15 @@ def main():
     my_choice = view_menu(options)
     my_success = choose_option(my_choice)
     if my_success == 0 :
-        result = subprocess.run(["py", "references_02.py"])
-
+        try: 
+            result = subprocess.run(["python", "references_02.py"], shell=True, check=True)
+        except FileNotFoundError as exc:
+            print(f"Process failed because the executable could not be found.\n{exc}")
+        except subprocess.CalledProcessError as exc:
+            print(
+                f"Process failed because did not return a successful return code. "
+                f"Returned {exc.returncode}\n{exc}"
+            )
+        except subprocess.TimeoutExpired as exc:
+            print(f"Process timed out.\n{exc}")
 main()
