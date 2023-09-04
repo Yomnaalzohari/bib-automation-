@@ -231,7 +231,7 @@ def dblp_text():
                 return -1
             else:
                 file = open("references.txt", "w", encoding="UTF-8")
-                f2 = open("title_url.txt", "w", encoding="UTF-8")
+                f2 = open("titleurl.txt", "w", encoding="UTF-8")
                 f3 = open("reference.bib", "wb")
                 # Check if there are more than one references
                 if (str(type(hit)) == "<class 'list'>"):
@@ -436,7 +436,7 @@ def arxiv_text():
             return -1
         else:
             file = open("references_arxiv.txt", "w", encoding="UTF-8")
-            f2 = open("title_url_arxiv.txt", "w", encoding="UTF-8")
+            f2 = open("titleurl.txt", "w", encoding="UTF-8")
             f3 = open("reference.bib", "w", encoding="UTF-8")
             # Check if there are more than one references
             if (str(type(entry)) == "<class 'list'>"):
